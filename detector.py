@@ -172,13 +172,13 @@ def realTime():
     font = cv2.FONT_HERSHEY_SIMPLEX
     
     while True:
-        # Capturar fotograma por fotograma (ret: valor booleano que indica si la captura fue exitosa)
+        # Capture frame by frame (ret: boolean value indicating if the capture was successful)
         ret, frame = video_capture.read()
         if not ret:
             print("Error: No se pudo leer el fotograma.")
             break
 
-        # Convertir el fotograma a escala de grises porque la detección funciona mejor de esta manera
+        # Convert the frame to grayscale because detection works better that way
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         faces = detector.detectMultiScale(
@@ -197,17 +197,18 @@ def realTime():
                 face_encoding = face_encoding[0]
                 distances = np.linalg.norm(face_encoding - encodings, axis=1)
                 best_match_index = np.argmin(distances)
-                print(len(unique_names))
                 if best_match_index < len(unique_names):
                     min_distance = distances[best_match_index]
-                    # Calcular la confianza
+                    # Calculate the confidence
                     confidence = 1 / (1 + min_distance)
-                    # Convertir la confianza en porcentaje
+                    # Convert the confidence to confidence_percent
                     confidence_percent = round(confidence * 100, 2)
                     name = unique_names[best_match_index]
+                else:
+                    name = "Unknown"
+                confidence_percent = 0
             cv2.putText(frame, name, (x+5,y-5), font, 1, (255,255,255), 2)
             cv2.putText(frame, str(confidence_percent)+"%", (x+5,y+h-5), font, 1, (255,255,0), 1)
-                
         
         cv2.imshow('Video', frame) 
 
@@ -217,28 +218,28 @@ def realTime():
     video_capture.release()
     cv2.destroyAllWindows()
 
-
+# Converts the .pkl file in to .xml file
 def pklToXml():
-    # Paso 1: Cargar los datos del archivo .pkl
+    # Loads the data from the .pkl file
     with open('output/encodings.pkl', 'rb') as file:
         data = pickle.load(file)
 
-    # Paso 2: Crear el XML
+    # Creates the .xml file
     root = ET.Element('root')
 
-    # Añadir los nombres al XML
+    # Adds the names on the .xml file
     names_element = ET.SubElement(root, 'names')
     for name in data['names']:
         name_element = ET.SubElement(names_element, 'name')
         name_element.text = name
 
-    # Añadir los encodings al XML
+    # Adds the encodings to the .xml file
     encodings_element = ET.SubElement(root, 'encodings')
     for encoding in data['encodings']:
         encoding_element = ET.SubElement(encodings_element, 'encoding')
         encoding_element.text = ' '.join(map(str, encoding))
 
-    # Paso 3: Guardar el XML en un archivo
+    # Saves the .xml file
     tree = ET.ElementTree(root)
     tree.write('output/encodings.xml')
 
