@@ -19,7 +19,7 @@ This project is a face recognition system built following the tutorial from [Rea
 2. Upload the images you want to use for validation.
 3. Run the validation script:
 
-   python detector.py --validate
+    python detector.py --validate
 
 ### Testing a Single Image
 
