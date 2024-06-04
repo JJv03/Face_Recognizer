@@ -1,6 +1,6 @@
 # FaceRecognizer
 
-This project is a face recognition system built following the tutorial from [Real Python](https://realpython.com/face-recognition-with-python/).
+This project is a face recognition system built following the tutorials from [Real Python](https://realpython.com/face-recognition-with-python/) and [AutoDesk Instructables](https://www.instructables.com/Real-time-Face-Recognition-an-End-to-end-Project/).
 
 ## Instructions
 
