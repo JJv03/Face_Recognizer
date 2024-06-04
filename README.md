@@ -37,6 +37,12 @@ To test the model with a single image, run:
 
     python detector.py --test -f yourImage
 
+### Real Time Recognizer
+
+With a model trained, run: 
+
+    python detector.py --realTime
+
 ### Help
 
 For a list of available parameters and their descriptions, use: 
