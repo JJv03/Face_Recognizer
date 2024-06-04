@@ -28,7 +28,7 @@ This project is a face recognition system built following the tutorial from [Rea
 ### Testing a Single Image
 
 To test the model with a single image, run: 
-  
+
     ```bash
     python detector.py --test -f yourImage
     ```
