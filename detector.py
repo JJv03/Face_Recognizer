@@ -1,9 +1,13 @@
 import argparse
 from pathlib import Path
 from collections import Counter
+import sys
 from PIL import Image, ImageDraw
 import face_recognition
 import pickle
+import cv2
+import xml.etree.ElementTree as ET
+import numpy as np
 
 # Constant variable for the path of output information
 DEFAULT_ENCODINGS_PATH = Path("output/encodings.pkl")
@@ -20,6 +24,7 @@ parser = argparse.ArgumentParser(description="Recognize faces in an image")
 parser.add_argument("--train", action="store_true", help="Train on input data")
 parser.add_argument("--validate", action="store_true", help="Validate trained model")
 parser.add_argument("--test", action="store_true", help="Test the model with an unknown image")
+parser.add_argument("--realTime", action="store_true", help="Test the model with a real time camera")
 parser.add_argument(
     "-m",
     action="store",
@@ -148,10 +153,102 @@ def validate(model: str = "hog"):
                 image_location=str(filepath.absolute()), model=model
             )
 
+def realTime():
+    # Inicializar un array con los nombres y codificaciones faciales disponibles
+    with open('output/encodings.pkl', 'rb') as file:
+        data = pickle.load(file)
+
+    unique_names = list(set(data['names']))
+    encodings = data['encodings']
+    
+    detector = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+    
+    video_capture = cv2.VideoCapture(0)
+    
+    if not video_capture.isOpened():
+        print("Error: No se pudo abrir la cámara.")
+        sys.exit()
+    
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    
+    while True:
+        # Capturar fotograma por fotograma (ret: valor booleano que indica si la captura fue exitosa)
+        ret, frame = video_capture.read()
+        if not ret:
+            print("Error: No se pudo leer el fotograma.")
+            break
+
+        # Convertir el fotograma a escala de grises porque la detección funciona mejor de esta manera
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+        faces = detector.detectMultiScale(
+            gray,
+            scaleFactor=1.2,
+            minNeighbors=5,
+            minSize=(25, 25),
+        )
+
+        for (x, y, w, h) in faces:
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            face_encoding = face_recognition.face_encodings(frame, [(y, x + w, y + h, x)])
+            name = "Unknown"
+            confidence_percent = 0
+            if face_encoding:
+                face_encoding = face_encoding[0]
+                distances = np.linalg.norm(face_encoding - encodings, axis=1)
+                best_match_index = np.argmin(distances)
+                print(len(unique_names))
+                if best_match_index < len(unique_names):
+                    min_distance = distances[best_match_index]
+                    # Calcular la confianza
+                    confidence = 1 / (1 + min_distance)
+                    # Convertir la confianza en porcentaje
+                    confidence_percent = round(confidence * 100, 2)
+                    name = unique_names[best_match_index]
+            cv2.putText(frame, name, (x+5,y-5), font, 1, (255,255,255), 2)
+            cv2.putText(frame, str(confidence_percent)+"%", (x+5,y+h-5), font, 1, (255,255,0), 1)
+                
+        
+        cv2.imshow('Video', frame) 
+
+        if cv2.waitKey(1) & 0xFF == 27:
+            break
+        
+    video_capture.release()
+    cv2.destroyAllWindows()
+
+
+def pklToXml():
+    # Paso 1: Cargar los datos del archivo .pkl
+    with open('output/encodings.pkl', 'rb') as file:
+        data = pickle.load(file)
+
+    # Paso 2: Crear el XML
+    root = ET.Element('root')
+
+    # Añadir los nombres al XML
+    names_element = ET.SubElement(root, 'names')
+    for name in data['names']:
+        name_element = ET.SubElement(names_element, 'name')
+        name_element.text = name
+
+    # Añadir los encodings al XML
+    encodings_element = ET.SubElement(root, 'encodings')
+    for encoding in data['encodings']:
+        encoding_element = ET.SubElement(encodings_element, 'encoding')
+        encoding_element.text = ' '.join(map(str, encoding))
+
+    # Paso 3: Guardar el XML en un archivo
+    tree = ET.ElementTree(root)
+    tree.write('output/encodings.xml')
+
 if __name__ == "__main__":
     if args.train:
         encode_known_faces(model=args.m)
+        pklToXml()
     if args.validate:
         validate(model=args.m)
     if args.test:
         recognize_faces(image_location=args.f, model=args.m)
+    if args.realTime:
+        realTime()
