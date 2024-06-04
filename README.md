@@ -25,11 +25,12 @@ This project is a face recognition system built following the tutorial from [Rea
 
 To test the model with a single image, run: 
   
-   python detector.py --test -f yourImage
+    python detector.py --test -f yourImage
 
 ### Help
 
 For a list of available parameters and their descriptions, use: 
-   python detector.py --help
+   
+    python detector.py --help
 
 If you have any questions or need further assistance, please refer to the help command above.
