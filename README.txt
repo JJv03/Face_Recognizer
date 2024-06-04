@@ -1,15 +1,28 @@
-FaceRecognizer made following the tutorial of this website:
-- https://realpython.com/face-recognition-with-python/ -
+# FaceRecognizer
 
-Instructions:
-* To train the model and generate the .pkl file go to the "training" directory:
-Create a new directory with the name of the person to train
-Upload as many images as you can of the person in order to get a good model of his traits
-Use "python detector.py --train"
-* To validate the model:
-At the "validation" directory upload the images you want to validate
-Use "python detector.py --validate" 
-* To test only one image:
-Use "python detector.py --test -f _yourImage_"
+This project is a face recognition system built following the tutorial from [Real Python](https://realpython.com/face-recognition-with-python/).
 
-If you have any doubt of parameters of the program use "python detector.py --help"
+## Instructions
+
+### Training the Model
+
+1. Navigate to the `training` directory.
+2. Create a new directory named after the person you want to train the model on.
+3. Upload as many images of the person as possible to achieve a good model of their features.
+4. Run the training script: python detector.py --train
+
+### Validating the Model
+
+1. Navigate to the `validation` directory.
+2. Upload the images you want to use for validation.
+3. Run the validation script: python detector.py --validate
+
+### Testing a Single Image
+
+To test the model with a single image, run: python detector.py --test -f yourImage
+
+### Help
+
+For a list of available parameters and their descriptions, use: python detector.py --help
+
+If you have any questions or need further assistance, please refer to the help command above.
