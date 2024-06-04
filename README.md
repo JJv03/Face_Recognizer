@@ -11,7 +11,9 @@ This project is a face recognition system built following the tutorial from [Rea
 3. Upload as many images of the person as possible to achieve a good model of their features.
 4. Run the training script:
 
+    ```bash
     python detector.py --train
+    ```
 
 ### Validating the Model
 
@@ -19,18 +21,24 @@ This project is a face recognition system built following the tutorial from [Rea
 2. Upload the images you want to use for validation.
 3. Run the validation script:
 
+    ```bash
     python detector.py --validate
+    ```
 
 ### Testing a Single Image
 
 To test the model with a single image, run: 
   
+    ```bash
     python detector.py --test -f yourImage
+    ```
 
 ### Help
 
 For a list of available parameters and their descriptions, use: 
    
+    ```bash
     python detector.py --help
+    ```
 
 If you have any questions or need further assistance, please refer to the help command above.
