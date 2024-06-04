@@ -6,6 +6,8 @@ This project is a face recognition system built following the tutorial from [Rea
 
 ### To use the program
 
+Install the dependencies of the program
+
     python -m pip install -r requirements.txt
 
 ### Training the Model
