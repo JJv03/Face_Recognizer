@@ -35,7 +35,7 @@ Install the dependencies of the program
 
 To test the model with a single image, run: 
 
-    python detector.py --test -f yourImage
+    python detector.py --test -f "yourImage"
 
 ### Real Time Recognizer
 
