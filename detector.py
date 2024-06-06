@@ -206,7 +206,7 @@ def realTime():
                     name = unique_names[best_match_index]
                 else:
                     name = "Unknown"
-                confidence_percent = 0
+                    confidence_percent = 0
             cv2.putText(frame, name, (x+5,y-5), font, 1, (255,255,255), 2)
             cv2.putText(frame, str(confidence_percent)+"%", (x+5,y+h-5), font, 1, (255,255,0), 1)
         
